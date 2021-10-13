@@ -161,3 +161,94 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
   
     sendToken(user, 200, res);
   });
+
+  //Update user profile
+  exports.updateProfile = catchAsyncError(async (req, res, next) => {
+   
+  const newUserData = {
+    name: req.body.name,
+    email:req.body.email
+  }
+  // will add cloudinary later
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData,{
+    new:true,
+    runValidators: true,
+    useFindAndModify: false
+  })
+
+  res.status(200).json({
+    success:true,
+    message:"User profile update successfully"
+})
+  
+  });
+  
+//Get All User (Admin)
+exports.getAllUsers = catchAsyncError(async(req, res, next)=>{
+    const users = await User.find()
+
+    res.status(200).json({
+      success: true,
+      users
+    });
+})
+
+// Get Single user (Admin)
+exports.getSingleUser = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(
+      new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+
+  //Update user Role - (ADMIN)
+  exports.updateUserRole = catchAsyncError(async (req, res, next) => {
+   
+    const newUserData = {
+      name: req.body.name,
+      email:req.body.email,
+      role: req.body.role
+    }
+    
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData,{
+      new:true,
+      runValidators: true,
+      useFindAndModify: false
+    })
+  
+    res.status(200).json({
+      success:true,
+      message:"User Role Updated successfully"
+  })
+    
+    });
+
+  //Delete User -- (Admin)
+  exports.deleteUser = catchAsyncError(async (req, res, next) => {   
+    const user = await User.findById(req.params.id)
+    if (!user) {
+      return next(
+        new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 400)
+      );
+    }
+
+    await user.remove()
+  
+    res.status(200).json({
+      success:true,
+      message:"User Deleted successfully"
+  })
+    
+    });
+
+
+

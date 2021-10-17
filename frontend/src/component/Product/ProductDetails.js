@@ -1,32 +1,40 @@
 import React, { useEffect } from 'react'
 import Carousel from 'react-material-ui-carousel'
 import './ProductDetails.css'
-import { getProductDetails } from '../../actions/productAction'
+import { clearErrors, getProductDetails } from '../../actions/productAction'
 import {useSelector, useDispatch} from 'react-redux'
 import ReactStars from 'react-rating-stars-component'
-
+import ReviewCard from './ReviewCard.js'
+import Loader from '../layout/Loader/Loader'
+import {useAlert} from 'react-alert'
 
 
 const ProductDetails = ({match}) => {
    
     const dispatch= useDispatch()
+    const alert = useAlert()
     const {product, loading, error} = useSelector((state)=> state.productDetails)
     useEffect(() => {
+        if(error) {
+            alert.error(error)
+            dispatch(clearErrors())
+        }
         dispatch(getProductDetails(match.params.id))
-    }, [dispatch, match.params.id])
+    }, [dispatch, match.params.id, alert, error])
 
     const options ={
         edit:false,
         color: "rgba(20,20,20,0.1)",
         activeColor:"tomato",
         size:window.innerWidth <600? 20:25,
-        value:product.reating,
+        value:product.ratings,
         isHalf:true,
     
     }
 
     return (
-        <>
+       <>
+       {loading ? <Loader /> : ( <>
            <div className="ProductDetails">
                <div>
                    <Carousel>
@@ -74,7 +82,18 @@ const ProductDetails = ({match}) => {
                </div>
 
            </div>
-        </>
+           <h3 className="reviewsHeading">REVIEWS</h3>
+           {product.reviews && product.reviews[0] ? (
+               <div className="reviews">
+                   {product.reviews && product.reviews.map((review)=>
+                   <ReviewCard review={review} />
+                   )}
+               </div>
+           ) : (
+               <p className="noReviews">No Reviews Yet</p>
+           ) }
+        </>)}
+       </>
     )
 }
 

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { CgMouse } from 'react-icons/cg'
-import Product from '../Product/Product'
+import ProductCard from './ProductCard'
 import './Home.css'
 import MetaData from '../layout/MedaData'
-import { getProduct } from '../../actions/productAction'
+import { clearErrors, getProduct } from '../../actions/productAction'
 import {useSelector, useDispatch} from 'react-redux'
 import Loader from '../layout/Loader/Loader'
 import {useAlert} from 'react-alert'
@@ -13,11 +13,12 @@ import {useAlert} from 'react-alert'
 const Home = () => {
     const dispatch= useDispatch()
     const alert = useAlert()
-const {loading, error, products, productsCount} = useSelector((state)=> state.products)
+    const {loading, error, products, productsCount} = useSelector((state)=> state.products)
 
     useEffect(() => {
         if(error) {
-            return alert.error(error)
+            alert.error(error)
+            dispatch(clearErrors())
         }
         dispatch(getProduct())
     }, [dispatch, error, alert])
@@ -41,7 +42,7 @@ const {loading, error, products, productsCount} = useSelector((state)=> state.pr
             </h2>
             <div className="container" id="container">
                 {products && products.map(product =>(
-                    <Product product={product} />
+                    <ProductCard product={product} />
                 ))}
                
             </div>

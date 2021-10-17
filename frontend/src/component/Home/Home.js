@@ -5,49 +5,48 @@ import './Home.css'
 import MetaData from '../layout/MedaData'
 import { getProduct } from '../../actions/productAction'
 import {useSelector, useDispatch} from 'react-redux'
+import Loader from '../layout/Loader/Loader'
+import {useAlert} from 'react-alert'
 
 
-
-const product = {
-    name: "Blue Tshirt",
-    images:[{url:"https://www.tecnomint.com/images/brand/1.jpg"}],
-    price:"$ 120",
-    _id:"user01"
-}
 
 const Home = () => {
     const dispatch= useDispatch()
+    const alert = useAlert()
+const {loading, error, products, productsCount} = useSelector((state)=> state.products)
 
     useEffect(() => {
-        
+        if(error) {
+            return alert.error(error)
+        }
         dispatch(getProduct())
-    }, [dispatch])
+    }, [dispatch, error, alert])
     return (
         <>
-        <MetaData title="Ecommerce" />
+        {loading ? ( <Loader />) :(
+            <>
+            <MetaData title="Ecommerce" />
         
-          <div className="banner">
-              <p>Welcome to Ecommerce</p>
-              <h1>FIND AMAZING PRODUCT BELOW</h1>
-              <a href="#container">
-                  <button>
-                      Scroll <CgMouse />
-                  </button>
-              </a>
-              </div>  
-              <h2 className="homeHeading">
-                  Featured Product
-              </h2>
-              <div className="container" id="container">
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-                  <Product product={product} />
-              </div>
+        <div className="banner">
+            <p>Welcome to Ecommerce</p>
+            <h1>FIND AMAZING PRODUCT BELOW</h1>
+            <a href="#container">
+                <button>
+                    Scroll <CgMouse />
+                </button>
+            </a>
+            </div>  
+            <h2 className="homeHeading">
+                Featured Product
+            </h2>
+            <div className="container" id="container">
+                {products && products.map(product =>(
+                    <Product product={product} />
+                ))}
+               
+            </div>
+            </>
+        ) }
         </>
     )
 }

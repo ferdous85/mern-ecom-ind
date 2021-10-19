@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "./Search.css"
-
+import MetaData from '../layout/MetaData'
 
 const Search = ({history}) => {
 
@@ -17,7 +17,7 @@ const Search = ({history}) => {
 
     return (
         <>
-      
+      <MetaData title="SEARCH A Product -- ECOMMERCE" />
         <form className="searchBox" onSubmit={searchSubmitHandler}>
           <input
             type="text"

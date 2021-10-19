@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { CgMouse } from 'react-icons/cg'
 import ProductCard from './ProductCard'
 import './Home.css'
-import MetaData from '../layout/MedaData'
+import MetaData from '../layout/MetaData'
 import { clearErrors, getProduct } from '../../actions/productAction'
 import {useSelector, useDispatch} from 'react-redux'
 import Loader from '../layout/Loader/Loader'
@@ -13,7 +13,7 @@ import {useAlert} from 'react-alert'
 const Home = () => {
     const dispatch= useDispatch()
     const alert = useAlert()
-    const {loading, error, products, productsCount} = useSelector((state)=> state.products)
+    const {loading, error, products} = useSelector((state)=> state.products)
 
     useEffect(() => {
         if(error) {

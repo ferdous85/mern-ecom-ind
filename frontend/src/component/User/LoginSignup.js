@@ -1,11 +1,21 @@
-import React,{useRef, useState} from 'react'
+import React,{useEffect, useRef, useState} from 'react'
 import './LoginSignup.css'
 import { Link } from 'react-router-dom'
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
 import FaceIcon from "@material-ui/icons/Face";
+import { useDispatch, useSelector } from "react-redux";
+import { clearErrors, login, register } from "../../actions/userAction";
+import { useAlert } from 'react-alert';
+import Loader from '../layout/Loader/Loader';
 
-const LoginSignup = () => {
+const LoginSignup = ({history}) => {
+    const dispatch = useDispatch();
+    const alert = useAlert()
+
+    const { error, loading, isAuthenticated } = useSelector(
+        (state) => state.user
+      );
 
     const loginTab = useRef(null)
     const registerTab = useRef(null)
@@ -27,7 +37,7 @@ const LoginSignup = () => {
 
 const loginSubmit = (e) =>{
     e.preventDefault()
-    console.log('Login Form Submited');
+    dispatch(login(loginEmail,loginPassword))
 }
 
 const registerSubmit = (e) =>{
@@ -39,7 +49,7 @@ const registerSubmit = (e) =>{
     myForm.set("password", password);
     myForm.set("avatar", avatar);
 
-    console.log('Sign Up Form Submited');
+    dispatch(register(myForm))
 }
 
 const registerDataChange = (e) => {
@@ -58,6 +68,17 @@ const registerDataChange = (e) => {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
   };
+
+  useEffect(() => {
+    if (error) {
+        alert.error(error);
+        dispatch(clearErrors());
+      }
+      if (isAuthenticated) {
+        history.push("/account");
+      }
+  }, [dispatch, error, alert, history, isAuthenticated])
+
   const switchTabs = (e, tab) => {
     if (tab === "login") {
       switcherTab.current.classList.add("shiftToNeutral");
@@ -78,6 +99,7 @@ const registerDataChange = (e) => {
 
     return (
         <>
+        {loading ? <Loader /> : <>
             <div className="LoginSignUpContainer">
             <div className="LoginSignUpBox">
               <div>
@@ -164,6 +186,7 @@ const registerDataChange = (e) => {
               </form>
             </div>
           </div>
+        </> }
         </>
     )
 }

@@ -9,6 +9,9 @@ import ProductDetails from './component/Product/ProductDetails'
 import Products from './component/Product/Products';
 import Search from './component/Product/Search'
 import LoginSignup from './component/User/LoginSignup';
+import store from './store'
+import { loadUser } from './actions/userAction';
+
 
 
 function App() {
@@ -18,6 +21,7 @@ function App() {
         families:["Roboto", 'Dorid Sans', "Chilanka"]
       }
     })
+    store.dispatch(loadUser)
   },[])
   return (
     <Router>

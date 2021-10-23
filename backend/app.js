@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const fileUpload = require('express-fileupload')
 
 const errorMiddleware = require('./middleware/error')
 
@@ -10,6 +11,8 @@ app.use(express.json())
 app.use(morgan('dev'))
 app.use(cookieParser())
 app.use(cors())
+app.use(express.urlencoded({extended:true}))
+app.use(fileUpload())
 
 //Route imports
 
